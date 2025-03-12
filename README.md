@@ -85,5 +85,5 @@ cd bot-musica-para-discord
 
 ## 👨‍💻 Desarrollado por
 
-- [@FortMoz](https://github.com/Fort503)
+- [@Christopher Moz](https://github.com/Fort503)
 
