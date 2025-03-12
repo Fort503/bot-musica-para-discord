@@ -196,7 +196,7 @@ async function updateMusicPanel(channel) {
 
     const row2 = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId('search').setLabel('🔎 Buscar').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('search').setLabel('🔎 Agregar canción').setStyle(ButtonStyle.Secondary),
             new ButtonBuilder().setCustomId('lista').setLabel('📋 Lista de canciones').setStyle(ButtonStyle.Secondary)
         );
 
