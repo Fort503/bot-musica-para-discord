@@ -1,8 +1,6 @@
 import { Player } from 'discord-player';
 import { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import 'dotenv/config';
-import crypto from 'crypto';
-global.crypto = crypto;
 
 const client = new Client({
     intents: [
