@@ -17,6 +17,9 @@ const client = new Client({
 const player = new Player(client);
 player.extractors.register(YoutubeiExtractor);
 
+const track = await extractor.extract('https://www.youtube.com/watch?v=5iksTXMTh-8');
+console.log(track);
+
 let currentPlayerMessage = null; 
 
 client.once('ready', () => {
