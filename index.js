@@ -1,5 +1,6 @@
 import { Player } from 'discord-player';
-import { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { YoutubeiExtractor } from 'discord-player-youtubei';
 import 'dotenv/config';
 
 const client = new Client({
