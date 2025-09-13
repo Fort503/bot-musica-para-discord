@@ -15,7 +15,11 @@ const client = new Client({
 const player = new Player(client);
 player.extractors.register(YoutubeiExtractor);
 
-const track = await extractor.extract('https://www.youtube.com/watch?v=5iksTXMTh-8');
+const url = 'https://www.youtube.com/watch?v=5iksTXMTh-8';
+const track = await player.search(url, {
+    requestedBy: null,
+}).then(x => x.tracks[0]);
+
 console.log(track);
 
 let currentPlayerMessage = null; 
