@@ -168,6 +168,14 @@ player.events.on('trackEnd', async (queue) => {
     await updateMusicPanel(queue.metadata.channel);
 });
 
+player.on("error", (queue, error) => {
+    console.error(`❌ Error en la cola: ${error.message}`);
+});
+
+player.on("playerError", (queue, error) => {
+    console.error(`❌ Error en el reproductor: ${error.message}`);
+});
+
 async function updateMusicPanel(channel) {
     const queue = player.nodes.get(channel.guild.id);
     if (!queue || !queue.isPlaying()) {
