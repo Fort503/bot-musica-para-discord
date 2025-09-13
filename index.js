@@ -1,9 +1,8 @@
-const { Player } = require('discord-player');
-const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-const { YoutubeiExtractor } = require('discord-player-youtubei');
-require('dotenv').config();
-global.crypto = require('crypto');
+import { Player } from 'discord-player';
+import { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import 'dotenv/config';
+import crypto from 'crypto';
+global.crypto = crypto;
 
 const client = new Client({
     intents: [
