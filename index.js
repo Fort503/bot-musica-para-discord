@@ -2,6 +2,7 @@ const { Player } = require('discord-player');
 const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const { YoutubeiExtractor } = require('discord-player-youtubei');
+const path = require('path');
 require('dotenv').config();
 global.crypto = require('crypto');
 
@@ -19,7 +20,7 @@ player.extractors.register(YoutubeiExtractor);
 
 let currentPlayerMessage = null; 
 
-client.once('ready', () => {
+client.once('clientReady', () => {
     console.log(`✅ Bot conectado como ${client.user.tag}`);
 });
 
