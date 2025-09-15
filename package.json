@@ -13,6 +13,8 @@
     "@discord-player/extractor": "^7.1.0",
     "@discordjs/opus": "^0.10.0",
     "@discordjs/voice": "^0.18.0",
+    "axios": "^1.12.2",
+    "cheerio": "^1.1.2",
     "crypto": "^1.0.1",
     "discord-player": "^7.1.0",
     "discord-player-youtubei": "^1.4.2",
@@ -25,6 +27,7 @@
     "mediaplex": "^1.0.0",
     "npm": "^10.9.2",
     "soundcloud-downloader": "^1.0.0",
+    "soundcloud-scraper": "^5.0.3",
     "ytdl-core": "^4.11.5"
   }
 }
