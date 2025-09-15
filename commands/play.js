@@ -13,7 +13,6 @@ module.exports = {
         let url = args[0];
 
         try {
-            // Si no es un enlace válido, hacemos búsqueda por nombre
             if (!isValidSoundcloudUrl(url)) {
                 const query = args.join(' ');
                 const track = await searchSoundcloudTrack(query);
@@ -24,10 +23,7 @@ module.exports = {
                 message.reply(`Encontrado: ${track.title} por ${track.user.username}`);
             }
 
-            // Conectar al canal de voz
             connectToVoiceChannel(voiceChannel);
-            
-            // Descargar y reproducir
             const stream = await downloadSoundcloudTrack(url);
             const resource = createAudioResource(stream);
             const player = playAudioResource(message.guild.id, resource);

@@ -1,6 +1,5 @@
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 
-// Mapa para almacenar los reproductores por guild
 const guildAudioPlayers = new Map();
 
 function getOrCreateAudioPlayer(guildId) {
