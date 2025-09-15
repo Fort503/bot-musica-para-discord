@@ -15,7 +15,7 @@
     "@discordjs/voice": "^0.18.0",
     "crypto": "^1.0.1",
     "discord-player": "^7.1.0",
-    "discord-player-youtubei": "^1.5.0",
+    "discord-player-youtubei": "^1.4.2",
     "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
     "ffmpeg": "^0.0.4",
@@ -24,7 +24,6 @@
     "install": "^0.13.0",
     "mediaplex": "^1.0.0",
     "npm": "^10.9.2",
-    "youtubei.js": "^15.1.0",
     "ytdl-core": "^4.11.5"
   }
 }
