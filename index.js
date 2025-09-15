@@ -1,7 +1,9 @@
-import { Player } from 'discord-player';
-import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
-import { YoutubeiExtractor } from 'discord-player-youtubei';
-import 'dotenv/config';
+const { Player } = require('discord-player');
+const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { YoutubeiExtractor } = require('discord-player-youtubei');
+require('dotenv').config();
+global.crypto = require('crypto');
 
 const client = new Client({
     intents: [
@@ -14,13 +16,6 @@ const client = new Client({
 
 const player = new Player(client);
 player.extractors.register(YoutubeiExtractor);
-
-const url = 'https://www.youtube.com/watch?v=5iksTXMTh-8';
-const track = await player.search(url, {
-    requestedBy: null,
-}).then(x => x.tracks[0]);
-
-console.log(track);
 
 let currentPlayerMessage = null; 
 
@@ -159,6 +154,38 @@ client.on('messageCreate', async (message) => {
     
         message.reply(`⏳ **Tiempo restante:** ${formatTime(remainingTime)}`);
     }
+
+    if (command === 'playlocal') {
+        const voiceChannel = message.member.voice.channel;
+        if (!voiceChannel) return message.reply('❌ Debes estar en un canal de voz.');
+
+        const filePath = path.join(__dirname, 'songs', 'test.mp3');
+
+        try {
+            let queue = player.nodes.get(message.guild.id);
+
+            if (!queue) {
+                queue = player.nodes.create(message.guild.id, {
+                    metadata: { channel: message.channel },
+                    selfDeaf: true,
+                    volume: 20,
+                    leaveOnEmpty: true,
+                    leaveOnEmptyCooldown: 10000,
+                    leaveOnEnd: false,
+                    leaveOnEndCooldown: 10000,
+                });
+            }
+
+            const { track } = await player.play(voiceChannel, filePath, {
+                nodeOptions: queue,
+            });
+
+            message.reply(`🎶 Reproduciendo archivo local: **${track.title}**`);
+        } catch (error) {
+            console.error('❌ Error al intentar reproducir archivo local:', error);
+            message.reply('❌ Ocurrió un error al intentar reproducir el archivo local.');
+        }
+    }
 });
 
 player.events.on('playerStart', async (queue, track) => {
@@ -171,14 +198,6 @@ player.events.on('trackAdd', async (queue) => {
 
 player.events.on('trackEnd', async (queue) => {
     await updateMusicPanel(queue.metadata.channel);
-});
-
-player.on("error", (queue, error) => {
-    console.error(`❌ Error en la cola: ${error.message}`);
-});
-
-player.on("playerError", (queue, error) => {
-    console.error(`❌ Error en el reproductor: ${error.message}`);
 });
 
 async function updateMusicPanel(channel) {
