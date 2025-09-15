@@ -160,7 +160,7 @@ client.on('messageCreate', async (message) => {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) return message.reply('❌ Debes estar en un canal de voz.');
 
-        const filePath = path.join(__dirname, 'songs', 'test.mp3');
+        const filePath = path.join(__dirname, 'songs', 'test.mp3'); // archivo local dentro de /songs
 
         try {
             let queue = player.nodes.get(message.guild.id);
@@ -179,9 +179,10 @@ client.on('messageCreate', async (message) => {
 
             const { track } = await player.play(voiceChannel, filePath, {
                 nodeOptions: queue,
+                queryType: 'file' 
             });
 
-            message.reply(`🎶 Reproduciendo archivo local: **${track.title}**`);
+            message.reply(`🎶 Reproduciendo archivo local: **${track.title || 'Archivo MP3'}**`);
         } catch (error) {
             console.error('❌ Error al intentar reproducir archivo local:', error);
             message.reply('❌ Ocurrió un error al intentar reproducir el archivo local.');
