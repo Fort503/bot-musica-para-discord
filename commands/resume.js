@@ -3,14 +3,14 @@ const { resumeAudio, getAudioPlayerStatus } = require('../utils/audioManager');
 module.exports = {
     name: 'resume',
     description: 'Reanuda la reproducción pausada',
-    execute(message, args, client) {
-        const audioStatus = getAudioPlayerStatus(message.guild.id);
-        if (audioStatus !== 'paused') return message.reply('La musica no esta pausada.');
+    execute(interaction, args, client) {
+        const audioStatus = getAudioPlayerStatus(interaction.guild.id);
+        if (audioStatus !== 'paused') return interaction.reply('La musica no esta pausada.');
 
-        if (resumeAudio(message.guild.id)) {
-            message.reply('Musica reanudada');
+        if (resumeAudio(interaction.guild.id)) {
+            interaction.reply('Musica reanudada');
         } else {
-            message.reply('No se pudo reanudar la musica.');
+            interaction.reply('No se pudo reanudar la musica.');
         }
     }
 };

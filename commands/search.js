@@ -3,12 +3,23 @@ const scdl = require('soundcloud-downloader').default;
 module.exports = {
     name: 'search',
     description: 'Buscar canciones en SoundCloud',
-    async execute(message, args) {
-        if (!args.length) {
-            return message.reply('Debes escribir el nombre de la canción que quieres buscar.');
+    options: [
+        {
+            name: 'query',
+            description: 'La canción que quieres buscar',
+            type: 3, // STRING
+            required: true,
+        },
+    ],
+    async execute(interaction, args) {
+        let query = interaction.options.getString('query');
+        if (!query) {
+            if (!args || args.length === 0) {
+                return interaction.reply('Debes escribir el nombre de la canción que quieres buscar.');
+            }
+            query = args.join(' ');
         }
 
-        const query = args.join(' ');
 
         try {
             const results = await scdl.search({
@@ -19,7 +30,7 @@ module.exports = {
             });
 
             if (!results.collection.length) {
-                return message.reply('No encontré resultados.');
+                return interaction.reply('No encontré resultados.');
             }
 
             let response = `Resultados de búsqueda para **${query}**:\n\n`;
@@ -29,14 +40,14 @@ module.exports = {
                 response += `${index + 1}. **${track.title}** — ${track.user.username}— ${duration} min\n`;
             });
 
-            message.client.searchCache = message.client.searchCache || {};
-            message.client.searchCache[message.author.id] = results.collection;
+            interaction.client.searchCache = interaction.client.searchCache || {};
+            interaction.client.searchCache[interaction.user.id] = results.collection;
 
-            message.reply(response);
+            interaction.reply(response);
 
         } catch (error) {
             console.error('Error al buscar en SoundCloud:', error);
-            message.reply('Hubo un error al buscar la canción.');
+            interaction.reply('Hubo un error al buscar la canción.');
         }
     }
 };

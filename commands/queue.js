@@ -3,12 +3,12 @@ const { getQueue, getCurrentTrack } = require('../utils/audioManager');
 module.exports = {
     name: 'queue',
     description: 'Muestra la cola de reproducción actual',
-    execute(message, args, client) {
-        const queue = getQueue(message.guild.id);
-        const currentTrack = getCurrentTrack(message.guild.id);
+    execute(interaction, args, client) {
+        const queue = getQueue(interaction.guild.id);
+        const currentTrack = getCurrentTrack(interaction.guild.id);
         
         if (queue.length === 0 && !currentTrack) {
-            return message.reply('No hay canciones en la cola de reproducción.');
+            return interaction.reply('No hay canciones en la cola de reproducción.');
         }
         
         let queueMessage = '**Cola de Reproducción**\n\n';
@@ -30,6 +30,6 @@ module.exports = {
             queueMessage += 'No hay más canciones en la cola.';
         }
         
-        message.reply(queueMessage);
+        interaction.reply(queueMessage);
     }
 };
