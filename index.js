@@ -173,9 +173,9 @@ client.on("messageCreate", async (message) => {
         case "nowplaying": {
             const player = client.riffy.players.get(message.guild.id);
             if (!player) return messages.error(message.channel, "¡No se está reproduciendo nada!");
-            if (!player.queue.current) return messages.error(message.channel, "¡Ninguna canción se está reproduciendo actualmente!");
+            if (!player.current) return messages.error(message.channel, "¡Ninguna canción se está reproduciendo actualmente!");
 
-            messages.nowPlaying(message.channel, player.queue.current);
+            messages.nowPlaying(message.channel, player.current);
             break;
         }
 
