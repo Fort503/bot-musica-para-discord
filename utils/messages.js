@@ -3,15 +3,12 @@ const emojis = require('../emojis.js');
 const config = require('../config.js');
 
 function formatDuration(ms) {
-    // Return 'EN VIVO' for streams
     if (!ms || ms <= 0 || ms === 'Infinity') return 'EN VIVO';
 
-    // Convert to seconds
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / (1000 * 60)) % 60);
     const hours = Math.floor(ms / (1000 * 60 * 60));
 
-    // Format based on length
     if (hours > 0) {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
@@ -36,20 +33,19 @@ module.exports = {
     nowPlaying: (channel, track) => {
         const embed = new EmbedBuilder()
             .setColor(config.embedColor)
-            .setTitle(`${emojis.music} Reproduciendo Ahora`)
-            .setDescription(`${track.info.title}`);
+            .setAuthor({ name: "Reproduciendo Ahora" })
+            .setTitle(track.info.title)
+            .setURL(track.info.uri);
 
         if (track.info.thumbnail && typeof track.info.thumbnail === 'string') {
             embed.setThumbnail(track.info.thumbnail);
         }
 
         embed.addFields([
-            { name: 'Artista', value: `${emojis.info} ${track.info.author}`, inline: true },
-            { name: 'Duración', value: `${emojis.time} ${getDurationString(track)}`, inline: true },
-            { name: 'Solicitado por', value: `${emojis.info} ${track.info.requester.tag}`, inline: true }
+            { name: 'Artista', value: track.info.author, inline: true },
+            { name: 'Duración', value: getDurationString(track), inline: true },
+            { name: 'Solicitado por', value: `${track.info.requester}`, inline: true }
         ])
-        .setFooter({ text: 'Usa !help para ver todos los comandos' });
-
         return channel.send({ embeds: [embed] });
     },
 
@@ -57,17 +53,17 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor(config.embedColor)
             .setDescription(`${emojis.success} Añadido a la cola: ${track.info.title}`);
-
+    
         if (track.info.thumbnail && typeof track.info.thumbnail === 'string') {
             embed.setThumbnail(track.info.thumbnail);
         }
-
+    
         embed.addFields([
-            { name: 'Artista', value: `${emojis.info} ${track.info.author}`, inline: true },
-            { name: 'Duración', value: `${emojis.time} ${getDurationString(track)}`, inline: true },
-            { name: 'Posición', value: `${emojis.queue} #${position}`, inline: true }
+            { name: 'Artista', value: track.info.author, inline: true },
+            { name: 'Posición en la cola', value: `\`#${position}\``, inline: true },
+            { name: 'Duración', value: `\`${getDurationString(track)}\``, inline: true },
         ]);
-
+    
         return channel.send({ embeds: [embed] });
     },
 
@@ -75,13 +71,12 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor(config.embedColor)
             .setTitle(`${emojis.success} Playlist Añadida`)
-            .setDescription(`**${playlistInfo.name}**`);
-
+            .setDescription(`Se añadieron **${tracks.length}** canciones de la playlist **${playlistInfo.name}** a la cola.`);
+    
         if (playlistInfo.thumbnail && typeof playlistInfo.thumbnail === 'string') {
             embed.setThumbnail(playlistInfo.thumbnail);
         }
 
-        // Calculate total duration excluding streams
         const totalDuration = tracks.reduce((acc, track) => {
             if (!track.info.isStream && track.info.length) {
                 return acc + track.info.length;
@@ -90,12 +85,10 @@ module.exports = {
         }, 0);
 
         embed.addFields([
-            { name: 'Total de Canciones', value: `${emojis.queue} ${tracks.length} canciones`, inline: true },
-            { name: 'Duración Total', value: `${emojis.time} ${formatDuration(totalDuration)}`, inline: true },
-            { name: 'Nº de Transmisiones', value: `${emojis.info} ${tracks.filter(t => t.info.isStream).length} transmisiones`, inline: true }
-        ])
-        .setFooter({ text: 'La playlist comenzará a reproducirse pronto' });
-
+            { name: 'Canciones', value: `\`${tracks.length}\``, inline: true },
+            { name: 'Duración Total', value: `\`${formatDuration(totalDuration)}\``, inline: true },
+            { name: 'Transmisiones en vivo', value: `\`${tracks.filter(t => t.info.isStream).length}\``, inline: true }
+        ]);
         return channel.send({ embeds: [embed] });
     },
 
@@ -105,13 +98,13 @@ module.exports = {
 
     queueList: (channel, queue, currentTrack, currentPage = 1, totalPages = 1) => {
         const embed = new EmbedBuilder()
-            .setColor(config.embedColor)
-            .setTitle(`${emojis.queue} Lista de Reproducción`);
+            .setColor(config.embedColor);
 
         if (currentTrack) {
+            embed.setAuthor({ name: "Cola de Reproducción" });
             embed.setDescription(
-                `**Reproduciendo Ahora:**\n${emojis.play} ${currentTrack.info.title} - ${getDurationString(currentTrack)}\n\n**A Continuación:**`
-            );
+                `**${emojis.play} Reproduciendo Ahora**\n${currentTrack.info.title} - \`${getDurationString(currentTrack)}\`\n\n**${emojis.queue} A Continuación:**`
+            ); 
 
             if (currentTrack.info.thumbnail && typeof currentTrack.info.thumbnail === 'string') {
                 embed.setThumbnail(currentTrack.info.thumbnail);
@@ -122,11 +115,10 @@ module.exports = {
 
         if (queue.length) {
             const tracks = queue.map((track, i) => 
-                `\`${(i + 1).toString().padStart(2, '0')}\` ${emojis.song} ${track.info.title} - \`${getDurationString(track)}\``
+                `\`${(i + 1).toString().padStart(2, '0')}.\` ${track.info.title.substring(0, 40)} - \`${getDurationString(track)}\``
             ).join('\n');
-            embed.addFields({ name: '\u200b', value: tracks });
+            embed.addFields({ name: `Total: ${queue.length} canciones`, value: tracks });
 
-            // Calculate total duration excluding streams
             const totalDuration = queue.reduce((acc, track) => {
                 if (!track.info.isStream && track.info.length) {
                     return acc + track.info.length;
@@ -136,14 +128,13 @@ module.exports = {
 
             const streamCount = queue.filter(t => t.info.isStream).length;
             const durationText = streamCount > 0 
-                ? `Duración Total: ${formatDuration(totalDuration)} (${streamCount} transmisiones)`
-                : `Duración Total: ${formatDuration(totalDuration)}`;
+                ? `Duración: ${formatDuration(totalDuration)} (+${streamCount} en vivo)`
+                : `Duración: ${formatDuration(totalDuration)}`;
 
             embed.setFooter({ 
-                text: `Total de Canciones: ${queue.length} • ${durationText} • Página ${currentPage}/${totalPages}` 
+                text: `${durationText} • Página ${currentPage}/${totalPages}` 
             });
         } else {
-            embed.addFields({ name: '\u200b', value: 'No hay canciones en la cola' });
             embed.setFooter({ text: `Página ${currentPage}/${totalPages}` });
         }
 
@@ -153,8 +144,15 @@ module.exports = {
     playerStatus: (channel, player) => {
         const embed = new EmbedBuilder()
             .setColor(config.embedColor)
-            .setTitle(`${emojis.info} Estado del Reproductor`)
-            .addFields([
+            .setAuthor({ name: "Estado del Reproductor" });
+
+        if (player.queue.current) {
+            const track = player.queue.current;
+            embed.setDescription(
+                `**Reproduciendo:**\n${track.info.title}`
+            );
+            
+            embed.addFields([
                 { 
                     name: 'Estado', 
                     value: player.playing ? `${emojis.play} Reproduciendo` : `${emojis.pause} Pausado`, 
@@ -162,22 +160,15 @@ module.exports = {
                 },
                 { 
                     name: 'Volumen', 
-                    value: `${emojis.volume} ${player.volume}%`, 
+                    value: `${emojis.volume} \`${player.volume}%\``, 
                     inline: true 
                 },
                 { 
-                    name: 'Modo Bucle', 
-                    value: `${emojis.repeat} ${player.loop === "queue" ? 'Cola' : 'Desactivado'}`, 
+                    name: 'Repetición', 
+                    value: `${emojis.repeat} \`${player.loop === "queue" ? 'Cola' : 'Desactivado'}\``, 
                     inline: true 
                 }
             ]);
-
-        if (player.queue.current) {
-            const track = player.queue.current;
-            embed.setDescription(
-                `**Reproduciendo Actualmente:**\n${emojis.music} ${track.info.title}\n` +
-                `${emojis.time} Duración: ${getDurationString(track)}`
-            );
             
             if (track.info.thumbnail && typeof track.info.thumbnail === 'string') {
                 embed.setThumbnail(track.info.thumbnail);
@@ -190,11 +181,11 @@ module.exports = {
     help: (channel, commands) => {
         const embed = new EmbedBuilder()
             .setColor(config.embedColor)
-            .setTitle(`${emojis.info} Comandos Disponibles`)
+            .setAuthor({ name: "Ayuda de Comandos" })
             .setDescription(commands.map(cmd => 
-                `${emojis.music} \`${cmd.name}\` - ${cmd.description}`
+                `\`${config.prefix}${cmd.name}\` - ${cmd.description}`
             ).join('\n'))
-            .setFooter({ text: 'Prefijo: ! • Ejemplo: !play <nombre de la canción>' });
+            .setFooter({ text: `Ejemplo: ${config.prefix}play <nombre de la canción>` });
         return channel.send({ embeds: [embed] });
     }
 }; 
