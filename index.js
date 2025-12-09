@@ -87,14 +87,14 @@ client.on("messageCreate", async (message) => {
 
                 const resolve = await client.riffy.resolve({
                     query: query,
-                    requester: message.author,
+                    requester: message.member,
                 });
 
                 const { loadType, tracks, playlistInfo } = resolve;
 
                 if (loadType === "playlist") {
                     for (const track of resolve.tracks) {
-                        track.info.requester = message.author;
+                        track.info.requester = message.member;
                         player.queue.add(track);
                     }
 
@@ -102,7 +102,7 @@ client.on("messageCreate", async (message) => {
                     if (!player.playing && !player.paused) return player.play();
                 } else if (loadType === "search" || loadType === "track") {
                     const track = tracks.shift();
-                    track.info.requester = message.author;
+                    track.info.requester = message.member;
                     const position = player.queue.length + 1;
                     player.queue.add(track);
                     
