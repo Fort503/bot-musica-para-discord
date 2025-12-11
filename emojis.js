@@ -1,18 +1,18 @@
 module.exports = {
     success: "✔",
     error: "✖",
-    music: "🎵",
-    queue: "🎶",
+    music: "♫",
+    queue: "♬",
     info: "»",
-    time: "⏳",
+    time: "⧖",
     song: "♪",
-    volume: "🔊",
+    volume: "♩",
     pause: "❚❚",
     play: "▶",
     skip: "≫",
     previous: "≪",
     stop: "■",
     shuffle: "⤮",
-    repeat: "🔁",
+    repeat: "↻",
     loading: "…"
-}; 
+};
