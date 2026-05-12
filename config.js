@@ -1,10 +1,10 @@
 module.exports = {
     prefix: '!',
     nodes: [{
-        host: process.env.LAVALINK_HOST || "lavalink.jirayu.net",
-        password: process.env.LAVALINK_PASSWORD || "youshallnotpass",
-        port: 13592,
-        secure: false,
+        host: process.env.LAVALINK_HOST || "lavalinkv4.serenetia.com",
+        password: process.env.LAVALINK_PASSWORD || "https://seretia.link/discord",
+        port: parseInt(process.env.LAVALINK_PORT) || 443,
+        secure: process.env.LAVALINK_SECURE !== "false",
         name: "Main Node"
     }],
     spotify: {
@@ -12,5 +12,6 @@ module.exports = {
         clientSecret: process.env.SPOTIFY_CLIENT_SECRET
     },
     botToken: process.env.BOT_TOKEN,
-    embedColor: "#0061ff"
+    embedColor: "#0061ff",
+    guildId: process.env.GUILD_ID || null
 };
